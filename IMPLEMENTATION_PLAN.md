@@ -138,7 +138,7 @@ src/
 
 ### Phase 2: Core Data Layer (45 minutes)
 
-#### 2.1 GraphQL Operations Setup
+#### 2.1 GraphQL Operations Setup - COMPLETED
 
 - [x] Define TypeScript types based on GraphQL schema and Figma designs **COMPLETED IN PHASE 1**
 
@@ -205,15 +205,25 @@ export const ADD_NOTE = gql`
   }
 `;
 
-// Note: timestamp must be 32-bit seconds, use Math.floor(Date.now() / 1000)
+// CRITICAL: timestamp must be 32-bit seconds, use Math.floor(Date.now() / 1000)
+// The API uses 32-bit Int (max value ~2.1 billion), NOT 64-bit milliseconds
 ```
 
-#### 2.2 Custom Hooks Development (Apollo Client v3 + React 18)
+**Implementation Status:**
 
-- [ ] `useBirds` hook using Apollo's `useQuery`
+- ✅ All TypeScript interfaces fully defined and documented
+- ✅ GraphQL queries implemented and tested with real API data
+- ✅ GraphQL mutations implemented with proper timestamp handling documentation
+- ✅ Critical API limitations documented in code comments
+
+#### 2.2 Custom Hooks Development (Apollo Client v3 + React 18) - IN PROGRESS 🔄
+
+- [x] `useBirds` hook using Apollo's `useQuery` **COMPLETED ✅**
   - Built-in loading states and error handling
   - Automatic caching via Apollo's InMemoryCache
   - Error boundary integration
+  - **Implemented**: `/src/hooks/useBirds.ts` with TypeScript support
+  - **Integrated**: Refactored `App.tsx` to use custom hook instead of direct `useQuery`
 - [ ] `useBird` hook for fetching single bird
   - Apollo's `useQuery` with variables for bird ID
   - Normalized cache automatically handles updates
