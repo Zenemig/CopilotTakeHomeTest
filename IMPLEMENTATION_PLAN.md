@@ -216,7 +216,7 @@ export const ADD_NOTE = gql`
 - ✅ GraphQL mutations implemented with proper timestamp handling documentation
 - ✅ Critical API limitations documented in code comments
 
-#### 2.2 Custom Hooks Development (Apollo Client v3 + React 18) - PARTIAL COMPLETE 🔄
+#### 2.2 Custom Hooks Development (Apollo Client v3 + React 18) - NEARLY COMPLETE 🔄
 
 - [x] `useBirds` hook using Apollo's `useQuery` **COMPLETED ✅**
   - Built-in loading states and error handling
@@ -231,10 +231,13 @@ export const ADD_NOTE = gql`
   - **Implemented**: `/src/hooks/useBird.ts` with conditional fetching
   - **Integrated**: Added click handlers in `App.tsx` with console logging
   - **Tested**: Bird details logged to console on card click with loading states
-- [ ] `useAddNote` hook using Apollo's `useMutation`
+- [x] `useAddNote` hook using Apollo's `useMutation` **COMPLETED ✅**
   - Optimistic updates with Apollo's optimisticResponse
   - Automatic cache updates via `update` function
   - Error handling with Apollo's error policies
+  - **Implemented**: `/src/hooks/useAddNote.ts` with cache management
+  - **Integrated**: Added note form to bird cards with real-time UI updates
+  - **Tested**: Full note submission flow with optimistic updates and error handling
 - [ ] `useSearch` hook for client-side filtering (React 18 patterns)
   - **Debounced search** (400ms) using useEffect + cleanup
   - **useMemo** for optimized filtering performance
