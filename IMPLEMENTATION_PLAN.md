@@ -216,7 +216,7 @@ export const ADD_NOTE = gql`
 - ✅ GraphQL mutations implemented with proper timestamp handling documentation
 - ✅ Critical API limitations documented in code comments
 
-#### 2.2 Custom Hooks Development (Apollo Client v3 + React 18) - IN PROGRESS 🔄
+#### 2.2 Custom Hooks Development (Apollo Client v3 + React 18) - PARTIAL COMPLETE 🔄
 
 - [x] `useBirds` hook using Apollo's `useQuery` **COMPLETED ✅**
   - Built-in loading states and error handling
@@ -224,10 +224,13 @@ export const ADD_NOTE = gql`
   - Error boundary integration
   - **Implemented**: `/src/hooks/useBirds.ts` with TypeScript support
   - **Integrated**: Refactored `App.tsx` to use custom hook instead of direct `useQuery`
-- [ ] `useBird` hook for fetching single bird
+- [x] `useBird` hook for fetching single bird **COMPLETED ✅**
   - Apollo's `useQuery` with variables for bird ID
   - Normalized cache automatically handles updates
   - Skip query when no bird selected
+  - **Implemented**: `/src/hooks/useBird.ts` with conditional fetching
+  - **Integrated**: Added click handlers in `App.tsx` with console logging
+  - **Tested**: Bird details logged to console on card click with loading states
 - [ ] `useAddNote` hook using Apollo's `useMutation`
   - Optimistic updates with Apollo's optimisticResponse
   - Automatic cache updates via `update` function

@@ -1,10 +1,26 @@
+import { useState } from 'react';
 import { useBirds } from './hooks/useBirds';
+import { useBird } from './hooks/useBird';
 
 const App = () => {
-	const { loading, error, birds } = useBirds();
+	const [selectedBirdId, setSelectedBirdId] = useState<string | null>(null);
+	const { loading: birdsLoading, error: birdsError, birds } = useBirds();
+	const { bird: selectedBird, loading: birdLoading, error: birdError } = useBird(selectedBirdId);
 
-	if (loading) return <div className="p-4 text-center">Loading birds...</div>;
-	if (error) return <div className="p-4 text-center text-red-600">Error: {error.message}</div>;
+	const handleBirdClick = (birdId: string) => {
+		setSelectedBirdId(birdId);
+	};
+
+	if (selectedBird) {
+		console.log('Selected Bird Details:', selectedBird);
+	}
+
+	if (birdError) {
+		console.error('Error loading bird details:', birdError);
+	}
+
+	if (birdsLoading) return <div className="p-4 text-center">Loading birds...</div>;
+	if (birdsError) return <div className="p-4 text-center text-red-600">Error: {birdsError.message}</div>;
 
 	return (
 		<div className="min-h-screen bg-gray-50 p-4">
@@ -14,10 +30,14 @@ const App = () => {
 					{birds.map((bird) => (
 						<div
 							key={bird.id}
+							onClick={() => handleBirdClick(bird.id)}
 							className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer p-4"
 						>
 							<h3 className="font-semibold text-lg">{bird.english_name}</h3>
 							<p className="text-gray-600 italic">{bird.latin_name}</p>
+							{selectedBirdId === bird.id && birdLoading ? (
+								<p className="text-blue-600 text-sm mt-2">Loading details...</p>
+							) : null}
 						</div>
 					))}
 				</div>
