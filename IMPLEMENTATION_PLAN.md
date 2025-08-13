@@ -54,10 +54,10 @@ This document outlines the step-by-step implementation plan for building a bird 
 
 - [ ] Review Figma designs to determine UI library needs
 - [ ] Install additional dependencies (minimal for test app):
-  - **Icons**: `lucide-react` (for back button, search icon, close buttons)
-  - **Styling**: `tailwindcss` + `@tailwindcss/typography` only
+  - **Icons**: `lucide-react` (tree-shakable, optimized SVGs for React)
+  - **Styling**: `tailwindcss postcss autoprefixer @tailwindcss/typography`
   - **Image handling**: Native `img` with error states (keep it simple)
-  - **Form handling**: Native form handling (no external library needed)
+  - **Form handling**: Native form handling (React 18 best practices)
   - **Animations**: Tailwind CSS transitions for slide-in modal
 
 #### 1.3 Project Structure Setup (Responsive-First, Modal-Based)
@@ -172,24 +172,25 @@ export const ADD_NOTE = gql`
 // Note: timestamp must be 32-bit seconds, use Math.floor(Date.now() / 1000)
 ```
 
-#### 2.2 Custom Hooks Development
+#### 2.2 Custom Hooks Development (Apollo Client v3 + React 18)
 
-- [ ] `useBirds` hook for fetching all birds
-  - Loading states
-  - Error handling
-  - Retry logic
+- [ ] `useBirds` hook using Apollo's `useQuery`
+  - Built-in loading states and error handling
+  - Automatic caching via Apollo's InMemoryCache
+  - Error boundary integration
 - [ ] `useBird` hook for fetching single bird
-  - Caching strategy
-  - Loading states
-- [ ] `useAddNote` hook for note mutations
-  - Optimistic updates
-  - Error handling
-  - Cache updates
-- [ ] `useSearch` hook for client-side bird filtering
-  - **Debounced search** (400ms delay) to prevent excessive filtering
-  - **Case-insensitive filtering** on both `english_name` and `latin_name` fields
+  - Apollo's `useQuery` with variables for bird ID
+  - Normalized cache automatically handles updates
+  - Skip query when no bird selected
+- [ ] `useAddNote` hook using Apollo's `useMutation`
+  - Optimistic updates with Apollo's optimisticResponse
+  - Automatic cache updates via `update` function
+  - Error handling with Apollo's error policies
+- [ ] `useSearch` hook for client-side filtering (React 18 patterns)
+  - **Debounced search** (400ms) using useEffect + cleanup
+  - **useMemo** for optimized filtering performance
+  - **Case-insensitive filtering** on both name fields
   - Return filtered results + loading state during debounce
-  - Clear/reset functionality
 
 #### 2.3 Simple State Management (No Modal Abstractions)
 
@@ -242,9 +243,10 @@ export const watermarkImage = async (imageUrl: string): Promise<Blob> => {
   - `<div className="min-h-screen bg-gray-50">` for full height light background
   - Container for header + main content
 
-- [ ] `Header` component (Dynamic Animation)
+- [ ] `Header` component (Dynamic Animation + Lucide Icons)
   - **Default state**: "Birds" title + search bar
-  - **Detail state**: Back button (lucide-react ChevronLeft) + "Birds / [Bird Name]" + Add Note button
+  - **Detail state**: Back button `<ChevronLeft />` + "Birds / [Bird Name]" + Add Note button
+  - **Lucide imports**: `import { ChevronLeft, Plus } from 'lucide-react'`
   - Smooth transitions using Tailwind `transition-all duration-200`
   - Styled with `bg-white shadow-sm border-b p-4`
 
@@ -262,12 +264,12 @@ export const watermarkImage = async (imageUrl: string): Promise<Blob> => {
   - Simple aspect ratio: `aspect-square` or `aspect-[4/3]`
   - Click handler for modal opening
 
-- [ ] `SearchBar` component
+- [ ] `SearchBar` component (Modern React 18 + Lucide)
   - Simple input with Tailwind: `w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500`
-  - Lucide-react Search icon
-  - **Debounced onChange handler** (300-500ms) for performance
+  - Lucide-react Search icon: `import { Search } from 'lucide-react'`
+  - **Debounced onChange handler** (400ms) using useEffect cleanup
   - Show loading indicator during debounce period
-  - Clear button when search has value
+  - Clear button with X icon: `import { X } from 'lucide-react'`
 
 #### 4.3 Bird Detail Modal (Side Slide-In)
 
@@ -326,11 +328,12 @@ export const watermarkImage = async (imageUrl: string): Promise<Blob> => {
 
 #### 5.1 Tailwind Configuration
 
-- [ ] Install and configure Tailwind CSS
+- [ ] Install and configure Tailwind CSS (latest Vite setup)
   - `npm install -D tailwindcss postcss autoprefixer @tailwindcss/typography`
   - `npx tailwindcss init -p`
-  - Configure content paths for React components
-  - Add to globals.css: `@tailwind base; @tailwind components; @tailwind utilities;`
+  - Configure `tailwind.config.js` content paths: `["./index.html", "./src/**/*.{js,ts,jsx,tsx}"]`
+  - Add to `src/index.css`: `@tailwind base; @tailwind components; @tailwind utilities;`
+  - Import CSS in `src/main.tsx`: `import './index.css'`
 
 #### 5.2 Pure Tailwind Pattern (Recommended for Test App)
 
@@ -518,6 +521,51 @@ const useSearch = (birds: Bird[]) => {
 
   return { query, setQuery, filteredBirds, isSearching };
 };
+
+// Modern Apollo Client v3 hook example
+const useBirds = () => {
+  const { data, loading, error } = useQuery(GET_BIRDS, {
+    errorPolicy: "all", // Handle partial errors gracefully
+  });
+
+  return {
+    birds: data?.birds || [],
+    loading,
+    error,
+  };
+};
+
+// Apollo mutation with optimistic updates
+const useAddNote = () => {
+  const [addNote, { loading, error }] = useMutation(ADD_NOTE, {
+    update(cache, { data }) {
+      // Apollo automatically updates the cache for related queries
+    },
+    optimisticResponse: (variables) => ({
+      addNote: Date.now().toString(), // Temporary ID
+    }),
+  });
+
+  const submitNote = useCallback(
+    async (birdId: string, comment: string) => {
+      try {
+        await addNote({
+          variables: {
+            birdId,
+            comment,
+            timestamp: Math.floor(Date.now() / 1000),
+          },
+        });
+      } catch (err) {
+        // Error handling with Apollo's error policies
+        console.error("Failed to add note:", err);
+      }
+    },
+    [addNote]
+  );
+
+  return { submitNote, loading, error };
+};
 ```
 
 ### Performance Requirements
@@ -552,12 +600,29 @@ const useSearch = (birds: Bird[]) => {
 ### GraphQL Endpoint Configuration
 
 ```typescript
-// Correct endpoint configuration
-const client = new ApolloClient({
+// Modern Apollo Client v3 setup (latest best practices)
+import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
+
+const httpLink = createHttpLink({
   uri: "https://takehome.graphql.copilot.money",
+});
+
+const authLink = setContext((_, { headers }) => {
+  return {
+    headers: {
+      ...headers,
+      authorization: `Bearer ${import.meta.env.VITE_ACCESS_TOKEN}`,
+    },
+  };
+});
+
+export const client = new ApolloClient({
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
-  headers: {
-    Authorization: "Bearer [API_KEY]",
+  defaultOptions: {
+    watchQuery: { errorPolicy: "all" },
+    query: { errorPolicy: "all" },
   },
 });
 ```
