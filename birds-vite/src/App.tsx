@@ -3,6 +3,7 @@ import { useBirds } from './hooks/useBirds';
 import { useBird } from './hooks/useBird';
 import { useAddNote } from './hooks/useAddNote';
 import { useSearch } from './hooks/useSearch';
+import { WatermarkedImage } from './components/common/WatermarkedImage';
 
 const App = () => {
 	const [selectedBirdId, setSelectedBirdId] = useState<string | null>(null);
@@ -82,6 +83,14 @@ const App = () => {
 							onClick={() => handleBirdClick(bird.id)}
 							className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer p-4"
 						>
+							{bird.thumb_url ? (
+								<WatermarkedImage
+									src={bird.thumb_url}
+									alt={bird.english_name}
+									className="w-full object-cover rounded mb-3"
+									loading="lazy"
+								/>
+							) : null}
 							<h3 className="font-semibold text-lg">{bird.english_name}</h3>
 							<p className="text-gray-600 italic">{bird.latin_name}</p>
 							
@@ -96,13 +105,13 @@ const App = () => {
 									<div className="mb-4">
 										<h4 className="font-semibold text-sm text-gray-700 mb-2">Bird Details:</h4>
 										<p className="text-xs text-gray-600">ID: {selectedBird.id}</p>
-										{selectedBird.image_url && (
-											<img 
+										{selectedBird.image_url ? (
+											<WatermarkedImage 
 												src={selectedBird.image_url} 
 												alt={selectedBird.english_name}
-												className="w-full h-32 object-cover rounded mt-2"
+												className="w-full object-cover rounded mt-2"
 											/>
-										)}
+										) : null}
 									</div>
 									
 									<div className="mb-4">
