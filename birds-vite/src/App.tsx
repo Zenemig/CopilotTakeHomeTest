@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useBirds } from './hooks/useBirds';
 import { useBird } from './hooks/useBird';
 import { useAddNote } from './hooks/useAddNote';
+import { useSearch } from './hooks/useSearch';
 
 const App = () => {
 	const [selectedBirdId, setSelectedBirdId] = useState<string | null>(null);
 	const [noteText, setNoteText] = useState('');
 	const { loading: birdsLoading, error: birdsError, birds } = useBirds();
+	const { query, setQuery, filteredBirds, isSearching, clearSearch } = useSearch(birds);
 	const { bird: selectedBird, loading: birdLoading, error: birdError } = useBird(selectedBirdId);
 	const { submitNote, loading: addingNote, error: addNoteError } = useAddNote();
 
@@ -42,8 +44,39 @@ const App = () => {
 		<div className="min-h-screen bg-gray-50 p-4">
 			<div className="max-w-7xl mx-auto">
 				<h1 className="text-3xl font-bold text-gray-900 mb-6">Birds</h1>
+				
+				{/* Search Bar */}
+				<div className="mb-6">
+					<div className="relative">
+						<input
+							type="text"
+							value={query}
+							onChange={(e) => setQuery(e.target.value)}
+							placeholder="Search birds by English or Latin name..."
+							className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+						/>
+						{query && (
+							<button
+								onClick={clearSearch}
+								className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+							>
+								✕
+							</button>
+						)}
+					</div>
+					<div className="mt-2 text-sm text-gray-600">
+						{isSearching ? (
+							<span className="text-blue-600">Searching...</span>
+						) : (
+							<span>
+								{query ? `Found ${filteredBirds.length} of ${birds.length} birds` : `Showing all ${birds.length} birds`}
+							</span>
+						)}
+					</div>
+				</div>
+				
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-					{birds.map((bird) => (
+					{filteredBirds.map((bird) => (
 						<div
 							key={bird.id}
 							onClick={() => handleBirdClick(bird.id)}
