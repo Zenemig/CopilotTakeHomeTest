@@ -10,8 +10,8 @@ interface BirdsGridProps {
 }
 
 const BirdCardSkeleton = () => (
-  <li className="w-42 flex flex-col gap-3 pb-3">
-    <div className="w-full h-24 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse" />
+  <li className="flex flex-col gap-3 pb-3">
+    <div className="w-full aspect-[7/4] bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse" />
     <div className="flex flex-col gap-2">
       <div className="h-5 bg-gradient-to-r from-gray-200 to-gray-300 rounded animate-pulse" />
       <div className="h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded animate-pulse w-3/4" />
@@ -22,7 +22,7 @@ const BirdCardSkeleton = () => (
 export const BirdsGrid = ({ birds, loading, error, onBirdClick }: BirdsGridProps) => {
   if (loading) {
     return (
-      <ul className="flex flex-wrap gap-6 pb-16">
+      <ul className="grid gap-6 pb-16" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(168px, 1fr))' }}>
         {Array.from({ length: 8 }, (_, index) => (
           <BirdCardSkeleton key={`skeleton-${index}`} />
         ))}
@@ -55,7 +55,7 @@ export const BirdsGrid = ({ birds, loading, error, onBirdClick }: BirdsGridProps
   }
 
   return (
-    <ul className="flex flex-wrap gap-6 pb-16">
+    <ul className="grid gap-6 pb-16" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(168px, 1fr))' }}>
       {birds.map((bird, index) => (
         <BirdCard key={bird.id} bird={bird} tabIndex={index} onBirdClick={onBirdClick} />
       ))}

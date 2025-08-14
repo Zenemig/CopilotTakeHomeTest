@@ -8,7 +8,7 @@ interface BirdCardProps {
 }
 
 const cardClasses = [
-  'w-42 flex flex-col gap-3 pb-3',
+  'flex flex-col gap-3 pb-3',
   'cursor-pointer group',
   'rounded-xl',
   'transition-all duration-300 ease-out',
@@ -30,11 +30,11 @@ export const BirdCard = ({ bird, tabIndex, onBirdClick }: BirdCardProps) => {
         }
       }}
     >
-      <div className="relative overflow-hidden rounded-lg transition-all duration-300 ease-out group-hover:shadow-lg group-hover:shadow-black/10">
+      <div className="relative overflow-hidden rounded-lg transition-all duration-300 ease-out group-hover:shadow-lg group-hover:shadow-black/10 w-full aspect-[7/4]">
         <WatermarkedImage 
           src={bird.thumb_url} 
           alt={bird.english_name} 
-          className="w-full h-24 object-cover rounded-lg transition-all duration-300 ease-out group-hover:brightness-110 group-hover:scale-105" 
+          className="w-full h-full object-cover rounded-lg transition-all duration-300 ease-out group-hover:brightness-110 group-hover:scale-105" 
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/0 via-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out rounded-lg" />
       </div>
