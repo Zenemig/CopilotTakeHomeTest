@@ -70,24 +70,29 @@ This document outlines the step-by-step implementation plan for building a bird 
 src/
 ├── components/
 │   ├── layout/
-│   │   ├── AppLayout.tsx          # Main app container
-│   │   └── Header.tsx             # Dynamic header (grid view / detail view)
+│   │   ├── AddNoteButton.tsx         # Add note button
+│   │   ├── AppLayout.tsx             # Main app container
+│   │   ├── BackButton.tsx            # Back button
+│   │   ├── BreadcrumbNavigation.tsx  # Breadcrumb navigation
+│   │   └── Header.tsx                # Dynamic header (grid view / detail view)
 │   ├── birds/
-│   │   ├── BirdCard.tsx           # Individual bird card
-│   │   ├── BirdGrid.tsx           # Responsive grid
-│   │   ├── BirdDetailModal.tsx    # Slide-in side modal
-│   │   └── SearchBar.tsx          # Search input
+│   │   ├── BirdCard.tsx              # Individual bird card
+│   │   ├── BirdsGrid.tsx             # Responsive grid
+│   │   └── BirdDetails.tsx           # Slide-in side modal
 │   ├── notes/
-│   │   ├── AddNoteModal.tsx       # Simple note modal
-│   │   └── NotesList.tsx          # Notes display
+│   │   ├── AddNoteModal.tsx          # Simple note modal
+│   │   └── NotesList.tsx             # Notes display
 │   └── common/
-│       └── LoadingSpinner.tsx     # Simple loading state
+│       ├── Input.tsx                 # General-purpose input with search support
+│       ├── LoadingSpinner.tsx        # Simple loading state
+│       ├── Button.tsx                # Reusable button component
+│       └── WatermarkedImage.tsx      # Image with watermark overlay
 ├── hooks/
 │   ├── useBirds.ts
 │   ├── useBird.ts
 │   ├── useAddNote.ts
 │   ├── useImageWatermark.ts
-│   └── useSearch.ts               # Search functionality
+│   └── useSearch.ts                  # Search functionality
 ├── services/
 │   ├── graphql/
 │   │   ├── queries.ts
@@ -99,9 +104,9 @@ src/
 │   ├── dateUtils.ts
 │   └── searchUtils.ts
 ├── styles/
-│   └── globals.css                # Tailwind imports + global styles (renamed to index.css)
+│   └── index.css                     # Tailwind imports + global styles
 └── types/
-    └── index.ts                   # Shared TypeScript types
+    └── index.ts                      # Shared TypeScript types
 ```
 
 **COMPLETED - Project Structure Created:**
@@ -476,6 +481,23 @@ export const getWatermarkedImageUrl = async (
   - **Type Safety**: Full TypeScript integration with proper interfaces
   - **Memory Efficient**: Proper cleanup to prevent memory leaks
 
+- [x] `Input` Component ✅ - **GENERAL-PURPOSE INPUT WITH SEARCH SUPPORT**
+
+  - **Semantic HTML**: Uses `type="search"` for search inputs, supports text/email/password
+  - **Search Features** (when `type="search"`):
+    - Search icon (Lucide React)
+    - Clear button with X icon
+    - Loading spinner integration
+    - Dynamic padding for icons (`px-13` vs `px-4`)
+  - **Styling & States**:
+    - Custom focus ring: `box-shadow: 0px 0px 0px 3px #1D60F01A`
+    - Border transitions with primary color
+    - Hover states and disabled support
+    - 300ms smooth transitions
+  - **Accessibility**: Proper ARIA labels, semantic HTML, keyboard navigation
+  - **Integration**: Perfect compatibility with useSearch hook
+  - **Versatility**: Works for both search and form inputs (modals, etc.)
+
 **🚀 PERFORMANCE ENHANCEMENT OPPORTUNITY IDENTIFIED:**
 
 During implementation review, we identified a significant performance optimization opportunity for image loading. A comprehensive **Multi-Tier Loading Strategy** has been designed and documented in `FOLLOW-UPS.md` that will:
@@ -494,30 +516,51 @@ During implementation review, we identified a significant performance optimizati
 
 **Implementation Status**: Design complete, ready for Phase 1 implementation (see FOLLOW-UPS.md)
 
-**🔄 IMMEDIATE NEXT STEP - Search Component Integration:**
+**✅ COMPLETED - Search Component Integration:**
 
-- [ ] `SearchBar` component (Missing UI Implementation)
-  - **Hook Integration**: Connect to existing `useSearch` hook (already implemented)
-  - **Component Structure**:
+- [x] `Input` component with search functionality ✅ **IMPLEMENTED**
+
+  - **Hook Integration**: Successfully connected to existing `useSearch` hook
+  - **Component Structure**: General-purpose Input component with `type="search"` support
     ```typescript
-    interface SearchBarProps {
-      query: string;
-      onQueryChange: (query: string) => void;
-      isSearching: boolean;
-      onClear: () => void;
+    interface InputProps {
+      value: string;
+      onChange: (value: string) => void;
       placeholder?: string;
+      disabled?: boolean;
+      type?: "text" | "email" | "password" | "search";
+      label?: string;
+      // Search-specific props (only used when type="search")
+      onClear?: () => void;
+      isSearching?: boolean;
     }
     ```
-  - **Design Implementation**:
-    - Input with Tailwind: `w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500`
-    - Lucide-react Search icon: `import { Search } from 'lucide-react'`
-    - Clear button with X icon: `import { X } from 'lucide-react'`
-    - Loading indicator during debounce period (use existing `LoadingSpinner`)
-  - **App Integration**: Update `App.tsx` to use search functionality
+  - **Design Implementation**: ✅ **COMPLETED**
+    - **Search Features**: Search icon, clear button (X), loading spinner
+    - **Focus States**: Blue border with custom box-shadow: `0px 0px 0px 3px #1D60F01A`
+    - **Accessibility**: Proper ARIA labels, semantic HTML `type="search"`
+    - **Responsive Design**: Dynamic padding based on input type
+    - **Integration**: Seamless integration with useSearch hook and debounced filtering
+  - **App Integration**: ✅ **COMPLETED**
+
     ```typescript
-    const { query, setQuery, filteredBirds, isSearching, clearSearch } =
-      useSearch(birds || []);
+    // Successfully implemented in App.tsx
+    const { query, setQuery, filteredBirds, isSearching, clearSearch } = useSearch(birds || []);
+
+    // Input component usage:
+    <Input
+      type="search"
+      value={query}
+      onChange={setQuery}
+      onClear={clearSearch}
+      placeholder="Search for birds"
+      isSearching={isSearching}
+    />
+
+    // BirdsGrid uses filtered results:
+    <BirdsGrid birds={filteredBirds} ... />
     ```
+
   - **Performance**: Optimized re-renders, proper event handling
   - **Accessibility**: ARIA labels, screen reader support, keyboard navigation
 

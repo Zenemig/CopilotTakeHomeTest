@@ -2,14 +2,25 @@ import { BirdsGrid } from './components/birds/BirdsGrid';
 import { useState } from 'react';
 import { useBirds } from './hooks/useBirds';
 import { useBird } from './hooks/useBird';
+import { useSearch } from './hooks/useSearch';
 import { AppLayout } from './components/layout/AppLayout';
 import { Header } from './components/layout/Header';
 import { BirdDetails } from './components/birds/BirdDetails';
+import { Input } from './components/common/Input';
 
 const App = () => {
 	const [selectedBirdId, setSelectedBirdId] = useState<string | null>(null);
 	const { loading: birdsLoading, error: birdsError, birds } = useBirds();
 	const { bird: selectedBird, loading: birdLoading } = useBird(selectedBirdId);
+	
+	// Initialize search with birds data
+	const { 
+		query, 
+		setQuery, 
+		filteredBirds, 
+		isSearching, 
+		clearSearch 
+	} = useSearch(birds || []);
 
 	const handleBackClick = () => {
 		setSelectedBirdId(null);
@@ -37,11 +48,24 @@ const App = () => {
 				onAddNoteClick={handleAddNoteClick}
 			/>
 
-			{/* Main Content */}
-			<main className="h-full bg-white relative">
-				<div className="h-full p-6 overflow-scroll">
+			{/* Content Container - Includes search and grid */}
+			<div className="h-full bg-white relative flex flex-col">
+				{/* Search Section */}
+				<div className="border-b border-border p-6 flex-shrink-0">
+					<Input
+						type="search"
+						value={query}
+						onChange={setQuery}
+						onClear={clearSearch}
+						placeholder="Search for birds"
+						isSearching={isSearching}
+					/>
+				</div>
+
+				{/* Birds Grid */}
+				<div className="flex-1 p-6 overflow-y-auto min-h-0">
 					<BirdsGrid 
-						birds={birds} 
+						birds={filteredBirds} 
 						loading={birdsLoading} 
 						error={birdsError} 
 						onBirdClick={setSelectedBirdId} 
@@ -62,7 +86,7 @@ const App = () => {
 						</div>
 					) : null}
 				</div>
-			</main>
+			</div>
 		</AppLayout>
 	);
 };
