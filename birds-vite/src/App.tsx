@@ -1,8 +1,10 @@
+import { BirdsGrid } from './components/birds/BirdsGrid';
 import { useState } from 'react';
 import { useBirds } from './hooks/useBirds';
 import { useBird } from './hooks/useBird';
 import { AppLayout } from './components/layout/AppLayout';
 import { Header } from './components/layout/Header';
+import { BirdDetails } from './components/birds/BirdDetails';
 
 const App = () => {
 	const [selectedBirdId, setSelectedBirdId] = useState<string | null>(null);
@@ -36,19 +38,30 @@ const App = () => {
 			/>
 
 			{/* Main Content */}
-			<main className="h-full bg-white p-6 overflow-scroll">
-				{birdsLoading ? <div className="p-4 text-center">Loading birds...</div> : null}
-				{birdsError ? <div className="p-4 text-center text-red-600">Error: {birdsError.message}</div> : null}
-				{birds && birds.length > 0 ? (
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-						{birds.map((bird) => (
-							<div key={bird.id} onClick={() => setSelectedBirdId(bird.id)} className="cursor-pointer">
-								<img src={bird.thumb_url} alt={bird.english_name} />
-								<h2>{bird.english_name}</h2>
-							</div>
-						))}
-					</div>
-				) : null}
+			<main className="h-full bg-white relative">
+				<div className="h-full p-6 overflow-scroll">
+					<BirdsGrid 
+						birds={birds} 
+						loading={birdsLoading} 
+						error={birdsError} 
+						onBirdClick={setSelectedBirdId} 
+					/>
+				</div>
+				
+				{/* Full-screen Bird Details Overlay */}
+				<div 
+					className={`absolute inset-0 bg-white transition-transform duration-500 ease-in-out z-10 overflow-hidden ${
+						selectedBirdId
+							? 'translate-x-0'
+							: 'translate-x-full'
+					}`}
+				>
+					{selectedBirdId ? (
+						<div className="h-full p-6 overflow-y-auto bg-white">
+							<BirdDetails bird={selectedBird || undefined} />
+						</div>
+					) : null}
+				</div>
 			</main>
 		</AppLayout>
 	);
