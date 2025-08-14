@@ -35,7 +35,8 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Right side - Actions */}
         <AddNoteButton 
           isVisible={isDetailView} 
-          onAddNoteClick={onAddNoteClick} 
+          onAddNoteClick={onAddNoteClick}
+          disabled={!birdName}
         />
       </div>
     </header>

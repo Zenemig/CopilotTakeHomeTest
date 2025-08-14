@@ -7,11 +7,13 @@ import { AppLayout } from './components/layout/AppLayout';
 import { Header } from './components/layout/Header';
 import { BirdDetails } from './components/birds/BirdDetails';
 import { Input } from './components/common/Input';
+import { AddNoteModal } from './components/notes/AddNoteModal';
 
 const App = () => {
 	const [selectedBirdId, setSelectedBirdId] = useState<string | null>(null);
+	const [isAddNoteModalOpen, setIsAddNoteModalOpen] = useState(false);
 	const { loading: birdsLoading, error: birdsError, birds } = useBirds();
-	const { bird: selectedBird, loading: birdLoading } = useBird(selectedBirdId);
+	const { bird: selectedBird } = useBird(selectedBirdId);
 	
 	// Initialize search with birds data
 	const { 
@@ -27,15 +29,10 @@ const App = () => {
 	};
 
 	const handleAddNoteClick = () => {
-		console.log('Add Note clicked');
+		if (selectedBirdId) {
+			setIsAddNoteModalOpen(true);
+		}
 	};
-
-	if (birds) {
-		console.log(birds);
-	}
-	if (birdLoading) {
-		console.log(birdLoading);
-	}
 
 	const isDetailView = Boolean(selectedBirdId);
 
@@ -80,13 +77,23 @@ const App = () => {
 							: 'translate-x-full'
 					}`}
 				>
-					{selectedBirdId ? (
-						<div className="h-full p-6 overflow-y-auto bg-white">
-							<BirdDetails bird={selectedBird || undefined} />
-						</div>
-					) : null}
+				{selectedBirdId ? (
+					<div className="h-full p-6 overflow-y-auto bg-white">
+						<BirdDetails 
+							bird={selectedBird || undefined} 
+							onAddNoteClick={handleAddNoteClick}
+						/>
+					</div>
+				) : null}
 				</div>
 			</div>
+
+			{/* Add Note Modal */}
+			<AddNoteModal
+				isOpen={isAddNoteModalOpen}
+				onClose={() => setIsAddNoteModalOpen(false)}
+				birdId={selectedBirdId || undefined}
+			/>
 		</AppLayout>
 	);
 };

@@ -4,11 +4,13 @@ import { Button } from '../common/Button';
 interface AddNoteButtonProps {
   isVisible: boolean;
   onAddNoteClick?: () => void;
+  disabled?: boolean;
 }
 
 export const AddNoteButton: React.FC<AddNoteButtonProps> = ({
   isVisible,
-  onAddNoteClick
+  onAddNoteClick,
+  disabled
 }) => {
   return (
     <div
@@ -22,6 +24,7 @@ export const AddNoteButton: React.FC<AddNoteButtonProps> = ({
         variant="secondary"
         onClick={onAddNoteClick}
         className="whitespace-nowrap"
+        disabled={disabled}
       >
         Add Note
       </Button>

@@ -14,6 +14,7 @@ interface WatermarkedImageProps {
   alt: string;
   className?: string;
   loading?: 'lazy' | 'eager';
+  onLoad?: () => void;
 }
 
 const ImageSkeleton = ({ className }: { className?: string }) => (
@@ -31,7 +32,7 @@ const ImageFallback = ({ className }: { alt: string; className?: string }) => (
   </div>
 );
 
-export const WatermarkedImage = ({ src, alt, className = '', loading = 'lazy' }: WatermarkedImageProps) => {
+export const WatermarkedImage = ({ src, alt, className = '', loading = 'lazy', onLoad }: WatermarkedImageProps) => {
   const { src: watermarkedSrc, isLoading } = useSimpleWatermark(src);
   const [imageError, setImageError] = useState(false);
 
@@ -52,7 +53,10 @@ export const WatermarkedImage = ({ src, alt, className = '', loading = 'lazy' }:
       loading={loading}
       className={`${className} transition-opacity duration-300`}
       onError={() => setImageError(true)}
-      onLoad={() => setImageError(false)}
+      onLoad={() => {
+        setImageError(false);
+        onLoad?.();
+      }}
     />
   );
 };
