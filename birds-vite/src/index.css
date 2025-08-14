@@ -1,1 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import "tailwindcss";
+
+@theme {
+  /* Typography - Override default sans font to Inter */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  /* Colors */
+  --color-sidebar-bg: #FBFCFF;
+  --color-text-primary: #0D171C;
+  --color-text-secondary: #4F7A96;
+  --color-gradient-start: #F7F7F7;
+  --color-gradient-end: #D6E1F5;
+  --color-border-main: #0A0E1429;
+  --color-border: #D5DADF;
+  --color-nav-bg: #4D76A714;
+  --color-nav-bg-hover: #4D76A724;
+  --color-primary-border: #1D60F0;
+  --color-primary-bg: #1D60F0;
+  --color-primary-bg-hover: #1850D6;
+  --color-secondary-border: #0A0E140F;
+  --color-secondary-text: #152351;
+
+  /* Shadows */
+  --shadow-main-container: 0px 16px 34.71px 0px #00000026, 0px 36.51px 64.69px 0px #00000021, 135.7px 47.34px 86.78px 0px #00000014, 0px 200px 102.56px 0px #00000005, 378.69px 130.96px 112.03px 0px #00000000;
+  --shadow-button-secondary: 0px 1px 0.5px -1px #02172C1F, 0px 2px 4px 0px #02172C0A;
+  --shadow-button-primary: 0px 1px 1px -1px #02172C1F, 0px 2px 4px 0px #02172C0A;
+
+  /* Gradients */
+  --gradient-main-bg: linear-gradient(180deg, #F7F7F7 0%, #D6E1F5 100%);
+}
