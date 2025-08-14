@@ -10,8 +10,8 @@ export const BreadcrumbNavigation: React.FC<BreadcrumbNavigationProps> = ({
   birdName
 }) => {
   return (
-    <h1 className="flex items-center text-3xl font-bold text-text-primary min-w-0 flex-1">
-      <span className={`flex-shrink-0 transition-opacity duration-300 ease-in-out ${isDetailView ? 'opacity-40' : 'opacity-100'}`}>
+    <h1 className="flex items-center text-xl [@media(min-width:560px)]:text-3xl font-bold text-text-primary min-w-0 flex-1">
+      <span className={`${isDetailView ? '[@media(max-width:559px)]:hidden' : ''} flex-shrink-0 transition-opacity duration-300 ease-in-out ${isDetailView ? 'opacity-40' : 'opacity-100'}`}>
         Birds
       </span>
       
@@ -23,11 +23,11 @@ export const BreadcrumbNavigation: React.FC<BreadcrumbNavigationProps> = ({
             : 'max-w-0 opacity-0 -ml-2'
         }`}
       >
-        <div className="flex items-center whitespace-nowrap">
-          <span className="mx-2 opacity-40 flex-shrink-0">
+        <div className="flex items-center">
+          <span className="[@media(max-width:559px)]:hidden mx-2 opacity-40 flex-shrink-0">
             /
           </span>
-          <span>
+          <span className="truncate">
             {birdName}
           </span>
         </div>

@@ -6,10 +6,24 @@ interface AppLayoutProps {
 
 export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   return (
-    <div className="min-h-screen w-full bg-linear-to-b from-gradient-start to-gradient-end flex justify-center items-center py-23 px-35">
-      <div className="max-w-7xl w-full bg-white flex shadow-main-container rounded-lg border border-border-main h-[calc(100vh-184px)] overflow-hidden">
-        {/* Left Sidebar */}
-        <aside className="w-86 bg-sidebar-bg flex-shrink-0 p-4 border-r border-border">
+    <div className="min-h-screen w-full flex justify-center items-stretch p-0 xl:bg-linear-to-b xl:from-gradient-start xl:to-gradient-end xl:items-center xl:py-23 xl:px-35">
+      <div className="w-full bg-white flex flex-col lg:flex-row h-screen overflow-hidden xl:max-w-7xl xl:shadow-main-container xl:rounded-lg xl:border xl:border-border-main xl:h-[calc(100vh-184px)]">
+        {/* Top Bar (Mobile/Tablet - 1024px and below) */}
+        <header className="lg:hidden bg-sidebar-bg flex items-center justify-between p-4 border-b border-border flex-shrink-0">
+          <div className="flex flex-col">
+            <h1 className="font-medium text-text-primary">The Birds App</h1>
+            <p className="text-sm font-normal text-text-secondary">By Copilot</p>
+          </div>
+          
+          <nav>
+            <a href="#" className="block px-3 py-2 text-sm font-semibold rounded-lg bg-nav-bg hover:bg-nav-bg-hover transition-colors duration-300 ease-in-out">
+              Home
+            </a>
+          </nav>
+        </header>
+
+        {/* Left Sidebar (Desktop - above 1024px) */}
+        <aside className="hidden lg:flex lg:w-86 bg-sidebar-bg flex-shrink-0 p-4 border-r border-border flex-col">
           <h1 className="font-medium text-text-primary">The Birds App</h1>
           <p className="text-sm font-normal text-text-secondary mb-4">By Copilot</p>
           
@@ -21,7 +35,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 basis-full bg-white">
+        <main className="flex-1 basis-full bg-white overflow-hidden">
           {children}
         </main>
       </div>

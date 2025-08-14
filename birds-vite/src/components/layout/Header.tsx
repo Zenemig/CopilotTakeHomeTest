@@ -18,7 +18,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   
   return (
-    <header className="bg-white px-6 py-4 flex items-center border-b border-border">
+    <header className="bg-white px-3 py-2 [@media(min-width:560px)]:px-6 [@media(min-width:560px)]:py-4 flex items-center border-b border-border">
       <div className="flex items-center justify-between w-full">
         {/* Left side - Navigation */}
         <div className="flex items-center">

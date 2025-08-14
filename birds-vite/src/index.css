@@ -29,4 +29,7 @@
 
   /* Gradients */
   --gradient-main-bg: linear-gradient(180deg, #F7F7F7 0%, #D6E1F5 100%);
+
+  /* Custom Breakpoints */
+  --breakpoint-xs: 560px;
 }

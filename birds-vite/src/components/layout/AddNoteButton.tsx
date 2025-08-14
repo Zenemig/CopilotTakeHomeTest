@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from '../common/Button';
+import { Plus } from 'lucide-react';
 
 interface AddNoteButtonProps {
   isVisible: boolean;
@@ -23,10 +24,11 @@ export const AddNoteButton: React.FC<AddNoteButtonProps> = ({
       <Button
         variant="secondary"
         onClick={onAddNoteClick}
-        className="whitespace-nowrap"
+        className="whitespace-nowrap [@media(max-width:559px)]:px-2"
         disabled={disabled}
       >
-        Add Note
+        <span className="[@media(max-width:559px)]:hidden">Add Note</span>
+        <Plus className="[@media(min-width:560px)]:hidden w-4 h-4" />
       </Button>
     </div>
   );
