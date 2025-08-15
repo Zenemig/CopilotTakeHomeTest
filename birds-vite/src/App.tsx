@@ -1,5 +1,5 @@
 import { BirdsGrid } from './components/birds/BirdsGrid';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useBirds } from './hooks/useBirds';
 import { useBird } from './hooks/useBird';
 import { useSearch } from './hooks/useSearch';
@@ -24,15 +24,20 @@ const App = () => {
 		clearSearch 
 	} = useSearch(birds || []);
 
-	const handleBackClick = () => {
-		setSelectedBirdId(null);
-	};
+	// Memoize callback to prevent unnecessary re-renders of BirdCard components
+	const handleBirdClick = useCallback((birdId: string) => {
+		setSelectedBirdId(birdId);
+	}, []);
 
-	const handleAddNoteClick = () => {
+	const handleBackClick = useCallback(() => {
+		setSelectedBirdId(null);
+	}, []);
+
+	const handleAddNoteClick = useCallback(() => {
 		if (selectedBirdId) {
 			setIsAddNoteModalOpen(true);
 		}
-	};
+	}, [selectedBirdId]);
 
 	const isDetailView = Boolean(selectedBirdId);
 
@@ -65,7 +70,7 @@ const App = () => {
 						birds={filteredBirds} 
 						loading={birdsLoading} 
 						error={birdsError} 
-						onBirdClick={setSelectedBirdId} 
+						onBirdClick={handleBirdClick} 
 					/>
 				</div>
 				

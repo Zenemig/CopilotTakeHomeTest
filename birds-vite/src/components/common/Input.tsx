@@ -1,5 +1,5 @@
 import { Search, X } from 'lucide-react';
-import { forwardRef } from 'react';
+import { forwardRef, memo } from 'react';
 import { LoadingSpinner } from './LoadingSpinner';
 
 interface InputProps {
@@ -29,7 +29,7 @@ const INPUT_BASE_CLASSES = `
   duration-300
 `;
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(
+const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ 
     value, 
     onChange, 
@@ -120,4 +120,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-Input.displayName = 'Input';
+// Memoize Input component to prevent unnecessary re-renders
+// when used in forms with stable props
+const MemoizedInput = memo(Input);
+MemoizedInput.displayName = 'Input';
+
+export { MemoizedInput as Input };

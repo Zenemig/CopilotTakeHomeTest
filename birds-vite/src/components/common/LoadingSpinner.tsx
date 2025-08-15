@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 /**
  * LoadingSpinner Component - Reusable animated loading spinner
  * 
@@ -10,7 +12,7 @@ interface LoadingSpinnerProps {
   'aria-label'?: string;
 }
 
-export const LoadingSpinner = ({ 
+const LoadingSpinnerComponent = ({ 
   size = 32, 
   className = 'text-gray-400', 
   'aria-label': ariaLabel = 'Loading...' 
@@ -39,3 +41,7 @@ export const LoadingSpinner = ({
     </svg>
   );
 };
+
+// Memoize LoadingSpinner since it's reused across multiple components
+// and props rarely change
+export const LoadingSpinner = memo(LoadingSpinnerComponent);

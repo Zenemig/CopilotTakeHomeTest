@@ -4,7 +4,7 @@
  * Shows skeleton while loading, handles errors gracefully, never shows original image
  */
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { useSimpleWatermark } from '../../hooks/useImageWatermark';
 import { LoadingSpinner } from './LoadingSpinner';
 import { ImageOff } from 'lucide-react';
@@ -32,7 +32,7 @@ const ImageFallback = ({ className }: { alt: string; className?: string }) => (
   </div>
 );
 
-export const WatermarkedImage = ({ src, alt, className = '', loading = 'lazy', onLoad }: WatermarkedImageProps) => {
+const WatermarkedImageComponent = ({ src, alt, className = '', loading = 'lazy', onLoad }: WatermarkedImageProps) => {
   const { src: watermarkedSrc, isLoading } = useSimpleWatermark(src);
   const [imageError, setImageError] = useState(false);
 
@@ -60,3 +60,7 @@ export const WatermarkedImage = ({ src, alt, className = '', loading = 'lazy', o
     />
   );
 };
+
+// Memoize WatermarkedImage to prevent unnecessary re-renders
+// especially important for heavy watermarking operations
+export const WatermarkedImage = memo(WatermarkedImageComponent);

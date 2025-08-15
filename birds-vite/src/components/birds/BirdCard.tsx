@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { Bird } from '../../types';
 import { WatermarkedImage } from '../common/WatermarkedImage';
 
@@ -16,7 +17,7 @@ const cardClasses = [
   'focus-within:outline-none focus-within:ring-2 focus-within:ring-primary-border/20 focus-within:ring-offset-2'
 ].join(' ');
 
-export const BirdCard = ({ bird, tabIndex, onBirdClick }: BirdCardProps) => {
+const BirdCardComponent = ({ bird, tabIndex, onBirdClick }: BirdCardProps) => {
   return (
     <li 
       key={bird.id} 
@@ -45,3 +46,7 @@ export const BirdCard = ({ bird, tabIndex, onBirdClick }: BirdCardProps) => {
     </li>
   )
 };
+
+// Memoize BirdCard to prevent unnecessary re-renders in large lists
+// Only re-render when bird data, tabIndex, or onBirdClick reference changes
+export const BirdCard = memo(BirdCardComponent);

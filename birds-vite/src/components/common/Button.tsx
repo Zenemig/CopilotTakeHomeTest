@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary';
   children: React.ReactNode;
 }
 
-export const Button: React.FC<ButtonProps> = ({
+const ButtonComponent: React.FC<ButtonProps> = ({
   variant = 'secondary',
   children,
   disabled = false,
@@ -55,3 +55,7 @@ export const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
+
+// Memoize Button component to prevent unnecessary re-renders
+// when used in forms or lists with stable props
+export const Button = memo(ButtonComponent);
